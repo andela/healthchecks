@@ -36,12 +36,8 @@ def pairwise(iterable):
 
 @login_required
 def my_checks(request, failed=None):
-    if failed:
-        q = Check.objects.failed_for_user(request.team.user)
-        page = 'failed_checks'
-    else:
-        q = Check.objects.for_user(request.team.user)
-        page = 'checks'
+    q = Check.objects.for_user(request.team.user, bool(failed))
+    page = 'failed_checks' if failed else 'checks'
     checks = list(q)
 
     counter = Counter()
