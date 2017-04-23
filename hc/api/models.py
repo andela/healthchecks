@@ -11,6 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from hc.api import transports
+from hc.api.managers import CheckManager
 from hc.lib import emails
 
 STATUSES = (
@@ -52,6 +53,7 @@ class Check(models.Model):
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
+    objects = CheckManager()
 
     def name_then_code(self):
         if self.name:
