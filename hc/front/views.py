@@ -35,8 +35,13 @@ def pairwise(iterable):
 
 
 @login_required
-def my_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
+def my_checks(request, failed=None):
+    if failed:
+        q = Check.objects.failed_for_user(request.team.user)
+        page = 'failed_checks'
+    else:
+        q = Check.objects.for_user(request.team.user)
+        page = 'checks'
     checks = list(q)
 
     counter = Counter()
@@ -55,7 +60,8 @@ def my_checks(request):
                 grace_tags.add(tag)
 
     ctx = {
-        "page": "checks",
+        "page": page,
+        "failed": failed,
         "checks": checks,
         "now": timezone.now(),
         "tags": counter.most_common(),
