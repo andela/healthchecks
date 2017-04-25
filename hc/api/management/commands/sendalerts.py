@@ -45,6 +45,10 @@ class Command(BaseCommand):
         check.status = check.get_status()
         check.save()
 
+        # However if ping is too often, we change status
+        if check.status == "up" and check.is_pinged_too_often():
+            check.status = "pinged too often"
+
         tmpl = "\nSending alert, status=%s, code=%s\n"
         self.stdout.write(tmpl % (check.status, check.code))
         errors = check.send_alert()

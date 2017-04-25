@@ -50,6 +50,7 @@ class Check(models.Model):
     grace = models.DurationField(default=DEFAULT_GRACE)
     n_pings = models.IntegerField(default=0)
     last_ping = models.DateTimeField(null=True, blank=True)
+    last_ping_timeout = models.DurationField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
@@ -98,6 +99,16 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
+
+    def is_pinged_too_often(self):
+        if self.status in ("new", "paused"):
+            return False
+
+        if self.last_ping_timeout < self.timeout
+            and self.last_ping_timeout > (self.timeout - self.grace):
+            return True
+
+        return False
 
     def assign_all_channels(self):
         if self.user:
