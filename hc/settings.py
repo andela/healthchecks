@@ -36,6 +36,7 @@ INSTALLED_APPS = (
 
     'hc.accounts',
     'hc.api',
+    'hc.blog',
     'hc.front',
     'hc.payments'
 )
@@ -53,7 +54,8 @@ MIDDLEWARE = (
 
 AUTHENTICATION_BACKENDS = (
     'hc.accounts.backends.EmailBackend',
-    'hc.accounts.backends.ProfileBackend'
+    'hc.accounts.backends.ProfileBackend',
+    'django.contrib.auth.backends.ModelBackend'
 )
 
 ROOT_URLCONF = 'hc.urls'
@@ -81,6 +83,7 @@ TEST_RUNNER = 'hc.api.tests.CustomRunner'
 
 # Default database engine is SQLite. So one can just check out code,
 # install requirements.txt and do manage.py runserver and it works
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
