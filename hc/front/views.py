@@ -28,8 +28,13 @@ def pairwise(iterable):
 
 
 @login_required
-def my_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
+def my_checks(request, status=None):
+    q = Check.objects.filter(user=request.team.user)
+
+    if status is not None and status in ("up", "down", "paused", "new"):
+        q = q.filter(status=status)
+
+    q = q.order_by("created")
     checks = list(q)
 
     counter = Counter()

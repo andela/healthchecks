@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-6">
         <h1>
         {% if request.team == request.user.profile %}
             My Checks
@@ -14,6 +14,15 @@
             {{ request.team.team_name }}
         {% endif %}
         </h1>
+
+    </div>
+
+    <div class="col-sm-6 text-right">
+        <div class="btn-group" role="group" aria-label="">
+          <a href="{% url 'hc-checks' %}" class="btn btn-default">All</a>
+          <a href="{% url 'hc-checks-status' status='paused' %}" class="btn btn-default">Paused</a>
+          <a href="{% url 'hc-checks-status' status='down' %}" class="btn btn-default">Failed</a>
+        </div>
     </div>
     {% if tags %}
     <div id="my-checks-tags" class="col-sm-12">
