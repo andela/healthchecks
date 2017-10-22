@@ -54,3 +54,23 @@ class ListChecksTestCase(BaseTestCase):
             self.assertNotEqual(check["name"], "Bob 1")
 
     ### Test that it accepts an api_key in the request
+
+    def test_it_checks_for_valid_status(self):
+        self.assertIn(self.a2.status, ("up", "down", "new", "paused"))
+
+    def test_it_shows_checks_for_specified_status(self):
+        url = "/api/v1/checks/%s/" % self.a2.status
+
+        r = self.client.get(url, HTTP_X_API_KEY="abc")
+        data = r.json()
+        for check in data["checks"]:
+            self.assertEquals(check["status"], self.a2.status)
+
+    def test_it_shows_only_failed_checks(self):
+        status = "down"
+        url = "/api/v1/checks/%s/" % status
+
+        r = self.client.get(url, HTTP_X_API_KEY="abc")
+        data = r.json()
+        for check in data["checks"]:
+            self.assertEquals(check["status"], "down")
