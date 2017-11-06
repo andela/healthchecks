@@ -4,6 +4,8 @@
 
 ![Screenshot of My Checks page](/stuff/screenshots/my_checks.png?raw=true "My Checks Page")
 
+![Screenshot of My Checks page](/stuff/screenshots/my_unresolved_checks.png?raw=true "Unresolved Checks Page")
+
 ![Screenshot of Period/Grace dialog](/stuff/screenshots/period_grace.png?raw=true "Period/Grace Dialog")
 
 ![Screenshot of Channels page](/stuff/screenshots/channels.png?raw=true "Channels Page")
