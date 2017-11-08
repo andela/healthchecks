@@ -88,7 +88,6 @@ class Check(models.Model):
             self.status = new_status
             self.save()
 
-
     def get_status(self):
         if self.status in ("new", "paused"):
             return self.status
