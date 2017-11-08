@@ -1,6 +1,6 @@
 from hc.api.models import Check
 from hc.test import BaseTestCase
-from datetime import timedelta as td
+from datetime import timedelta as td, datetime, timedelta
 from django.utils import timezone
 
 
@@ -58,3 +58,18 @@ class MyChecksTestCase(BaseTestCase):
 
         # Mobile
         self.assertContains(r, "label-warning")
+
+
+class MyFailedChecksTestCase(BaseTestCase):
+    def setUp(self):
+        super(MyFailedChecksTestCase, self).setUp()
+        self.check = Check(user=self.alice, name="Alice Never Made It Here")
+        self.check.last_ping = datetime.utcnow() - timedelta(days=20)
+        self.check.status = 'down'
+        self.check.save()
+
+    def test_it_works(self):
+        for email in ("alice@example.org", "bob@example.org"):
+            self.client.login(username=email, password="password")
+            r = self.client.get("/checks/failed")
+            self.assertContains(r, "Alice Never Made It Here", status_code=200)

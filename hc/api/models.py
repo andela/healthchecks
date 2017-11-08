@@ -11,6 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from hc.api import transports
+from hc.api.managers import CheckManager
 from hc.lib import emails
 
 STATUSES = (
@@ -53,6 +54,8 @@ class Check(models.Model):
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
+    objects = CheckManager()
+
     def name_then_code(self):
         if self.name:
             return self.name
@@ -80,6 +83,11 @@ class Check(models.Model):
 
         return errors
 
+    def update_status(self, new_status):
+        if self.status != new_status:
+            self.status = new_status
+            self.save()
+
     def get_status(self):
         if self.status in ("new", "paused"):
             return self.status
@@ -87,8 +95,10 @@ class Check(models.Model):
         now = timezone.now()
 
         if self.last_ping + self.timeout + self.grace > now:
+            self.update_status("up")
             return "up"
 
+        self.update_status('down')
         return "down"
 
     def in_grace_period(self):
