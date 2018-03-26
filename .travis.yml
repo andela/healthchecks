@@ -43,5 +43,5 @@ before_script:
   - mysql -e 'create database travis_ci_db;'
 
 #command to run the test suite
-# script:
-#   - python manage.py test
+script:
+  - python manage.py test
