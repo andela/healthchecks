@@ -21,7 +21,7 @@ class AddChannelTestCase(BaseTestCase):
         r = self.client.post(url, form)
 
         self.assertRedirects(r, "/integrations/")        
-        self.assertEquals(Channel.objects.count() == 1)
+        self.assertEquals(Channel.objects.count(), 1) # corrected the assertEquals()  method
 
     def test_it_trims_whitespace(self):
         """ Leading and trailing whitespace should get trimmed. """
