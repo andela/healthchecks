@@ -1,3 +1,5 @@
+"""Tesing moddule for channels"""
+
 from django.test.utils import override_settings
 
 from hc.api.models import Channel
@@ -5,17 +7,21 @@ from hc.test import BaseTestCase
 
 
 @override_settings(PUSHOVER_API_TOKEN="token", PUSHOVER_SUBSCRIPTION_URL="url")
+
 class AddChannelTestCase(BaseTestCase):
+    """Tests for Adding Channel"""
 
     def test_it_adds_email(self):
+        """Tests to see if email is added"""
+
         url = "/integrations/add/"
-        form = {"kind": "email", "value": "alice@example.org"}
+        form = {"kind" : "email", "value" : "alice@example.org"}
 
         self.client.login(username="alice@example.org", password="password")
         r = self.client.post(url, form)
 
-        self.assertRedirects(r, "/integrations/")
-        assert Channel.objects.count() == 1
+        self.assertRedirects(r, "/integrations/")        
+        self.assertEquals(Channel.objects.count() == 1)
 
     def test_it_trims_whitespace(self):
         """ Leading and trailing whitespace should get trimmed. """

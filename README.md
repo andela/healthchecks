@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/malep2007/healthcheck.svg?branch=dev-branch)](https://travis-ci.org/malep2007/healthcheck)
-
 # healthchecks
+
+[![Build Status](https://travis-ci.org/malep2007/healthcheck.svg?branch=dev-branch)](https://travis-ci.org/malep2007/healthcheck)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
@@ -176,13 +176,13 @@ There are separate Django management commands for each task:
    Assume the user doesn't intend to use the account any more and would
    probably *want* it removed.
 
-    ```
+    ```python
     $ ./manage.py pruneusers
-    ```    
+    ```
 
-When you first try these commands on your data, it is a good idea to 
-test them on a copy of your database, not on the live database right away. 
-In a production setup, you should also have regular, automated database 
+When you first try these commands on your data, it is a good idea to
+test them on a copy of your database, not on the live database right away.
+In a production setup, you should also have regular, automated database
 backups set up.
 
 ## Integrations
@@ -191,7 +191,7 @@ backups set up.
 
 To enable Pushover integration, you will need to:
 
-* register a new application on https://pushover.net/apps/build
+* register a new application on [https://pushover.net/apps/build](https://pushover.net/apps/build)
 * enable subscriptions in your application and make sure to enable the URL
   subscription type
 * add the application token and subscription URL to `hc/local_settings.py`, as
