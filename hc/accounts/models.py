@@ -15,7 +15,7 @@ from hc.lib import emails
 
 class Profile(models.Model):
     # Owner:
-    user = models.OneToOneField(User, blank=True, null=True)
+    user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
     team_name = models.CharField(max_length=200, blank=True)
     team_access_allowed = models.BooleanField(default=False)
     next_report_date = models.DateTimeField(null=True, blank=True)
@@ -23,7 +23,7 @@ class Profile(models.Model):
     ping_log_limit = models.IntegerField(default=100)
     token = models.CharField(max_length=128, blank=True)
     api_key = models.CharField(max_length=128, blank=True)
-    current_team = models.ForeignKey("self", null=True)
+    current_team = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.team_name or self.user.email
@@ -84,5 +84,5 @@ class Profile(models.Model):
 
 
 class Member(models.Model):
-    team = models.ForeignKey(Profile)
-    user = models.ForeignKey(User)
+    team = models.ForeignKey(Profile,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
