@@ -1,8 +1,11 @@
 """Tesing moddule for channels"""
 
 from django.test.utils import override_settings
+from django.test import Client
 
-from hc.api.models import Channel
+from hc.api.models import Channel, Check, CHANNEL_KINDS
+from hc.accounts.models import Profile, Member
+from hc.settings import PING_ENDPOINT
 from hc.test import BaseTestCase
 
 
@@ -43,5 +46,31 @@ class AddChannelTestCase(BaseTestCase):
             r = self.client.get(url)
             self.assertContains(r, "Integration Settings", status_code=200)
 
-    ### Test that the team access works
-    ### Test that bad kinds don't work
+### Test that the team access works
+class ChangeTeamTestCase(BaseTestCase):
+    """Testing team access works"""
+
+    def set_up(self):
+        self.client = Client()       
+        
+    def test_switch_team_works(self):
+        """Test Switch team works"""
+        response = self.client.get('switch_team/([\w-]+)')
+        self.assertEqual(response.status_code, 200)
+        
+            
+### Test that bad kinds don't work
+
+class KindsTestCase(BaseTestCase):
+    """Testing that only supported kinds work"""
+    def test_that_unsupported_kinds_dont_work(self):
+        """check to ensure exception message raises"""
+        self.kind = "not_exists"
+        my_channel = Channel()
+        my_channel.kind = self.kind
+        self.assertRaisesMessage(NotImplementedError, "NotImplementedError: Unknown channel kind: not_exits")
+       
+
+
+    
+    
