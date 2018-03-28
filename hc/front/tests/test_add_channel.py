@@ -46,7 +46,7 @@ class AddChannelTestCase(BaseTestCase):
             r = self.client.get(url)
             self.assertContains(r, "Integration Settings", status_code=200)
 
-# ### Test that the team access works
+### Test that the team access works
 # class ChangeTeamTestCase(BaseTestCase):
 #     """Testing team access works"""
 
@@ -56,7 +56,7 @@ class AddChannelTestCase(BaseTestCase):
 #     def test_switch_team_works(self):
 #         """Test Switch team works"""
 #         response = self.client.get('switch_team/([\w-]+)')
-#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(response.status_code, 404)
         
             
 # ### Test that bad kinds don't work
