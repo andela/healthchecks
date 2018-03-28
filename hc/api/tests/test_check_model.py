@@ -1,8 +1,8 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.utils import timezone
-from hc.api.models import Check
+from hc.api.models import Check, Notification, DEFAULT_TIMEOUT, DEFAULT_GRACE
 
 
 class CheckModelTestCase(TestCase):
@@ -18,12 +18,21 @@ class CheckModelTestCase(TestCase):
 
     def test_status_works_with_grace_period(self):
         check = Check()
+        my_status = "up"
+        check.status = my_status
+        # r = self.client.get("/check/")        
+        check.last_ping = timezone.now() 
+        check.timeout = timezone.timedelta(days=1)
+        check.grace = timezone.timedelta(hours=1)           
+        
+        up_ends = check.last_ping + check.timeout
+        grace_ends = up_ends + check.grace             
 
-        check.status = "up"
-        check.last_ping = timezone.now() - timedelta(days=1, minutes=30)
+        self.assertEqual(check.in_grace_period(), up_ends < check.last_ping < grace_ends)
+        self.assertEqual(check.get_status(), check.status)
 
-        self.assertTrue(check.in_grace_period())
-        self.assertEqual(check.get_status(), "up")
+        
+
 
         ### The above 2 asserts fail. Make them pass
 

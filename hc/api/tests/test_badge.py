@@ -23,4 +23,4 @@ class BadgeTestCase(BaseTestCase):
 
         r = self.client.get(url)        
         ### Assert that the svg is returned
-        self.assertEqual(r.status_code, 200) # should give a 200 if svg is found
+        self.assertEqual(r.status_code, 200) # should return ok if svg is returned
