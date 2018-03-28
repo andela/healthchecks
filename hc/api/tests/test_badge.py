@@ -21,5 +21,6 @@ class BadgeTestCase(BaseTestCase):
         sig = sig[:8].decode("utf-8")
         url = "/badge/%s/%s/foo.svg" % (self.alice.username, sig)
 
-        r = self.client.get(url)
+        r = self.client.get(url)        
         ### Assert that the svg is returned
+        self.assertEqual(r.status_code, 200) # should give a 200 if svg is found
