@@ -61,14 +61,14 @@ class AddChannelTestCase(BaseTestCase):
             
 # ### Test that bad kinds don't work
 
-# class KindsTestCase(BaseTestCase):
-#     """Testing that only supported kinds work"""
-#     def test_that_unsupported_kinds_dont_work(self):
-#         """check to ensure exception message raises"""
-#         self.kind = "not_exists"
-#         my_channel = Channel()
-#         my_channel.kind = self.kind
-#         self.assertRaisesMessage(NotImplementedError, "NotImplementedError: Unknown channel kind: not_exits")
+class KindsTestCase(BaseTestCase):
+    """Testing that only supported kinds work"""
+    def test_that_unsupported_kinds_dont_work(self):
+        """check to ensure exception message raises"""
+        self.kind = "not_exists"
+        my_channel = Channel()
+        my_channel.kind = self.kind
+        self.assertRaisesMessage(NotImplementedError, "NotImplementedError: Unknown channel kind: not_exits")
        
 
 

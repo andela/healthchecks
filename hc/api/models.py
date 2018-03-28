@@ -133,11 +133,7 @@ class Check(models.Model):
 
 class Ping(models.Model):
     n = models.IntegerField(null=True)
-<<<<<<< HEAD
     owner = models.ForeignKey(Check, on_delete=models.CASCADE)
-=======
-    owner = models.ForeignKey(Check,on_delete=models.CASCADE)
->>>>>>> dev-branch
     created = models.DateTimeField(auto_now_add=True)
     scheme = models.CharField(max_length=10, default="http")
     remote_addr = models.GenericIPAddressField(blank=True, null=True)
