@@ -15,7 +15,11 @@ from hc.lib import emails
 
 class Profile(models.Model):
     # Owner:
+<<<<<<< HEAD
     user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE) # missing required positional argument, on_delete
+=======
+    user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
+>>>>>>> dev-branch
     team_name = models.CharField(max_length=200, blank=True)
     team_access_allowed = models.BooleanField(default=False)
     next_report_date = models.DateTimeField(null=True, blank=True)
@@ -84,5 +88,9 @@ class Profile(models.Model):
 
 
 class Member(models.Model):
+<<<<<<< HEAD
     team = models.ForeignKey(Profile, on_delete=models.CASCADE)
+=======
+    team = models.ForeignKey(Profile,on_delete=models.CASCADE)
+>>>>>>> dev-branch
     user = models.ForeignKey(User, on_delete=models.CASCADE)

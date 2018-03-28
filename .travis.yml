@@ -1,7 +1,29 @@
+# First ensure it builds on Travis, then work on the tests
+
+# language: python
+# python:
+#   - "2.7"
+#   - "3.4"
+# install:
+#     - pip install -r requirements.txt
+#     - pip install braintree coveralls mock mysqlclient
+# env:
+#   - DB=sqlite
+#   - DB=mysql
+#   - DB=postgres
+# addons:
+#   postgresql: "9.4"
+# script:
+#   - coverage run --omit=*/tests/* --source=hc manage.py test
+# after_success: coveralls
+# cache: pip
+
+
 language: python
+
 python:
-  - "2.7"
   - "3.4"
+<<<<<<< HEAD
   - "3.5"
 install:
     - pip install -r requirements.txt
@@ -12,7 +34,27 @@ env:
   # - DB=postgres
 addons:
   postgresql: "9.4"
+=======
+
+services: mysql
+
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE="mysite.settings"
+    - PYTHONPATH="/home/travis/build/malep2007/mysite"
+    - PIP_USE_MIRRORS=true
+    - BUILD_ON_TRAVIS=true
+  matrix:
+    - DJANGO=2.0.3 DB=mysql
+
+#commands to install dependencies
+install:
+  - pip install -q Django==$DJANGO
+
+before_script:
+  - mysql -e 'create database travis_ci_db;'
+
+#command to run the test suite
+>>>>>>> dev-branch
 script:
-  - coverage run --omit=*/tests/* --source=hc manage.py test
-after_success: coveralls
-cache: pip
+  - python manage.py test

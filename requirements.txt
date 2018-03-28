@@ -1,9 +1,19 @@
-django-appconf==1.0.1
+django-appconf==1.0.2
+boto==2.48.0
 django-ses-backend==0.1.1
+<<<<<<< HEAD
 Django==1.11
 django_compressor==2.1
 djmail==0.11.0
 futures==3.0.3
 premailer==2.9.6
 # psycopg2==2.6.1
+=======
+Django==2.0.3
+django_compressor==2.2
+djmail==1.0.1
+futures==3.1.1
+premailer==3.1.1
+psycopg2==2.6.1
+>>>>>>> dev-branch
 requests==2.9.1
