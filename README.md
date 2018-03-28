@@ -1,6 +1,6 @@
 # healthchecks
 
-[![Build Status](https://travis-ci.org/malep2007/healthcheck.svg?branch=dev-branch)](https://travis-ci.org/malep2007/healthcheck)
+[![Build Status](https://travis-ci.org/malep2007/healthchecks.svg?branch=master)](https://travis-ci.org/malep2007/healthchecks)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
