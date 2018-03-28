@@ -75,5 +75,4 @@ class CheckModelTestCase(TestCase):
         check = Check()
         check.last_ping = timezone.now()
         check.grace_period = timezone.timedelta(hours=1)     
-
         self.assertFalse(check.in_grace_period(), False) # less than the grace period and not enough time for up status
