@@ -153,3 +153,6 @@ if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
 else:
     warnings.warn("local_settings.py not found, using defaults")
+
+# Coveralls Configuration
+COVERALLS_REPO_TOKEN=SoXOX0s49ofo0gndJ9so7o16HVkHpQ8PB
