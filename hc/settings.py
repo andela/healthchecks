@@ -155,4 +155,4 @@ else:
     warnings.warn("local_settings.py not found, using defaults")
 
 # Coveralls Configuration
-COVERALLS_REPO_TOKEN=SoXOX0s49ofo0gndJ9so7o16HVkHpQ8PB
+COVERALLS_REPO_TOKEN="SoXOX0s49ofo0gndJ9so7o16HVkHpQ8PB"
