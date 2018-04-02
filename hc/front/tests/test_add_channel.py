@@ -38,4 +38,13 @@ class AddChannelTestCase(BaseTestCase):
             self.assertContains(r, "Integration Settings", status_code=200)
 
     ### Test that the team access works
-    ### Test that bad kinds don't work
+
+    ### Test that bad kinds don't work - Added kinds that were not included in channel kinds
+
+    def test_bad_kinds(self):
+        self.client.login(username="bob@example.org", password="password")
+        kinds = ("twitter", "instagram", "linkedin", "medium")
+        for kind in kinds:
+            url = "/integrations/add_{}/".format(kind)
+            response = self.client.get(url)
+            assert response.status_code == 404
