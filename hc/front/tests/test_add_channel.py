@@ -43,3 +43,7 @@ class AddChannelTestCase(BaseTestCase):
     def test_bad_kinds(self):
         self.client.login(username="bob@example.org", password="password")
         kinds = ("twitter", "instagram", "linkedin", "medium")
+        for kind in kinds:
+            url = "/integrations/add_{}/".format(kind)
+            response = self.client.get(url)
+            assert response.status_code == 404
