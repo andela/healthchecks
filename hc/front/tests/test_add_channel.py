@@ -38,7 +38,8 @@ class AddChannelTestCase(BaseTestCase):
             self.assertContains(r, "Integration Settings", status_code=200)
 
     ### Test that the team access works
-    ### Test that bad kinds don't work
+
+    ### Test that bad kinds don't work - Added kinds that were not included in channel kinds
 
     def test_bad_kinds(self):
         self.client.login(username="bob@example.org", password="password")
