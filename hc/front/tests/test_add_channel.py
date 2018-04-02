@@ -39,3 +39,7 @@ class AddChannelTestCase(BaseTestCase):
 
     ### Test that the team access works
     ### Test that bad kinds don't work
+
+    def test_bad_kinds(self):
+        self.client.login(username="bob@example.org", password="password")
+        kinds = ("twitter", "instagram", "linkedin", "medium")
