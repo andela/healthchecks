@@ -1,6 +1,7 @@
 import json
 import uuid
 import requests
+import datetime
 
 from django.test import Client
 
@@ -10,8 +11,6 @@ from hc.settings import SITE_ROOT
 
 
 class CreateCheckTestCase(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        self.check = Check()
     URL = "/api/v1/checks/"
 
     def setUp(self):
@@ -49,7 +48,7 @@ class CreateCheckTestCase(BaseTestCase):
 
         doc = r.json()
         # introduce database model Check
-        # self.check = Check()
+        self.check = Check()
         self.check.name = doc["name"]
         self.check.tags = doc["tags"]
         my_url = self.check.url()
@@ -121,22 +120,52 @@ class CreateCheckTestCase(BaseTestCase):
         doc = req.json()
         self.assertEqual(doc['error'], "name is not a string")
 
-    # ### Test for the assignment of channels
-    # def test_channel_assigned(self):
-    #     self.check = Check()
+    ### Test for the assignment of channels
+    def test_channel_assigned(self):
+        self.check = Check()
         
-    #     payload = payload = {
-    #        "api_key": "abc",
-    #         "name": "Foo",
-    #         "tags": "bar,baz",
-    #         "timeout": 3600,
-    #         "grace": 60,
-    #         "channels": "*"
-    #         }
-    #     # req = self.post(payload, expected_error="no channels assigned")
+        payload = payload = {
+           "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 3600,
+            "grace": 60,
+            "channels": "*"
+            }
 
-    #     req = self.post(data=payload)
-        
-    #     doc = req.json()
-    #     self.assertFalse(doc['ping_url'], super())
-    # ### Test for the 'timeout is too small' and 'timeout is too large' errors
+        # if channel is created, it will respond with 201 success status code    
+        req = self.post(data=payload)          
+        self.assertEqual(req.status_code, 201) # assert that here
+
+
+    ### Test for the 'timeout is too small' and 'timeout is too large' errors
+
+    def test_timeout_small_large(self):
+        self.check = Check()
+
+        # create api for large timeout
+        payload_timeout_large = {
+            "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 72000,
+            "grace": 60,
+            "channels": "*"
+        }
+        self.check.timeout = datetime.timedelta(hours=payload_timeout_large['timeout'])
+        req = self.post(data=payload_timeout_large)        
+        self.assertTrue("ValueError: timeout too big", self.check.valid_timeout())
+
+        # create payload for small timeout        
+        payload_timeout_small = {
+            "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 50,
+            "grace": 60,
+            "channels": "*"
+        }
+
+        self.check.timeout = datetime.timedelta(hours=payload_timeout_small['timeout'])
+        req = self.post(data=payload_timeout_small)
+        self.assertTrue("VaalueError: timeout too small", self.check.valid_timeout)

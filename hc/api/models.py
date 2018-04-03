@@ -98,6 +98,13 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
+    
+    # implemented a method to catch bad timeout values
+    def valid_timeout(self):
+        if self.timeout > DEFAULT_TIMEOUT:
+            return ValueError("timeout too big")
+        elif self.timeout < DEFAULT_GRACE:
+            return ValueError("timeout too small")
 
     def assign_all_channels(self):
         if self.user:
