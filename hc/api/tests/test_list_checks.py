@@ -33,14 +33,47 @@ class ListChecksTestCase(BaseTestCase):
 
     def test_it_works(self):
         r = self.get()
-        ### Assert the response status code
+        ### Assert the response status code        
+        self.assertEqual(r.status_code, 200)
 
         doc = r.json()
         self.assertTrue("checks" in doc)
 
         checks = {check["name"]: check for check in doc["checks"]}
         ### Assert the expected length of checks
+        # Expected length of check is two, checks for GET and POST requests only
+        length = len(checks)
+        self.assertEqual(length, 2)
+
         ### Assert the checks Alice 1 and Alice 2's timeout, grace, ping_url, status,
+        name = doc['checks'][0]['name']
+        name2 = doc['checks'][1]['name']
+
+        timeout = doc['checks'][0]['timeout']
+        timeout2 = doc['checks'][1]['timeout']
+
+        grace = doc['checks'][0]['grace']
+        grace2 = doc['checks'][1]['grace']
+
+        ping_url = doc['checks'][0]['ping_url']
+        ping_url2 = doc['checks'][1]['ping_url']
+
+        status = doc['checks'][0]['status']
+        status2 = doc['checks'][1]['status']
+
+        url = "http://localhost:8000/ping/"
+
+        self.assertEqual(name, "Alice 1")
+        self.assertEqual(timeout, 3600)
+        self.assertEqual(grace, 900)
+        self.assertEqual(ping_url, url+(str(self.a1.code)))
+        self.assertEqual(status, "new")
+
+        self.assertEqual(name2, "Alice 2")
+        self.assertEqual(timeout2, 86400)
+        self.assertEqual(grace2, 3600)
+        self.assertEqual(ping_url2, url + str(self.a2.code))
+        self.assertEqual(status2, "up")
         ### last_ping, n_pings and pause_url
 
     def test_it_shows_only_users_checks(self):
@@ -54,3 +87,7 @@ class ListChecksTestCase(BaseTestCase):
             self.assertNotEqual(check["name"], "Bob 1")
 
     ### Test that it accepts an api_key in the request
+    def test_accepts_api_key(self):
+        r = self.client.get("/api/v1/checks/", HTTP_X_API_KEY="my_api_key")
+        self.assertEqual(type(r), <class 'django.http.response.JsonResponse'>) # Will accept api and respond with a django JsonResponse object
+        
