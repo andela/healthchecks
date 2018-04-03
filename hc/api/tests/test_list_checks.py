@@ -1,6 +1,7 @@
 import json
 from datetime import timedelta as td
 from django.utils.timezone import now
+from django.http.response import JsonResponse
 
 from hc.api.models import Check
 from hc.test import BaseTestCase
@@ -33,19 +34,19 @@ class ListChecksTestCase(BaseTestCase):
 
     def test_it_works(self):
         r = self.get()
-        ### Assert the response status code        
+        # Assert the response status code
         self.assertEqual(r.status_code, 200)
 
         doc = r.json()
         self.assertTrue("checks" in doc)
 
         checks = {check["name"]: check for check in doc["checks"]}
-        ### Assert the expected length of checks
+        # Assert the expected length of checks
         # Expected length of check is two, checks for GET and POST requests only
         length = len(checks)
         self.assertEqual(length, 2)
 
-        ### Assert the checks Alice 1 and Alice 2's timeout, grace, ping_url, status,
+        # Assert the checks Alice 1 and Alice 2's timeout, grace, ping_url, status,
         name = doc['checks'][0]['name']
         name2 = doc['checks'][1]['name']
 
@@ -74,7 +75,7 @@ class ListChecksTestCase(BaseTestCase):
         self.assertEqual(grace2, 3600)
         self.assertEqual(ping_url2, url + str(self.a2.code))
         self.assertEqual(status2, "up")
-        ### last_ping, n_pings and pause_url
+        # last_ping, n_pings and pause_url
 
     def test_it_shows_only_users_checks(self):
         bobs_check = Check(user=self.bob, name="Bob 1")
@@ -86,8 +87,9 @@ class ListChecksTestCase(BaseTestCase):
         for check in data["checks"]:
             self.assertNotEqual(check["name"], "Bob 1")
 
-    ### Test that it accepts an api_key in the request
+    # Test that it accepts an api_key in the request
     def test_accepts_api_key(self):
         r = self.client.get("/api/v1/checks/", HTTP_X_API_KEY="my_api_key")
-        self.assertEqual(type(r), <class 'django.http.response.JsonResponse'>) # Will accept api and respond with a django JsonResponse object
         
+        # Will accept api and respond with a django JsonResponse object
+        self.assertEqual(JsonResponse, type(r))
