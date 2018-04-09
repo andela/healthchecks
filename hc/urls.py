@@ -12,11 +12,13 @@ from django.contrib import admin
 urlpatterns = [
     # We shall use newer methods from django framework to route our apps
 
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),    
     url(r'^accounts/', include('hc.accounts.urls')),
     url(r'^', include('hc.api.urls')),
     url(r'^', include('hc.front.urls')),
-    url(r'^', include('hc.payments.urls'))
+    url(r'^', include('hc.payments.urls')),
+    url(r'^', include('blog.urls')),
+    
 
     # path("accounts/", include("hc.accounts.urls")),
     # path("", include("hc.api.urls")),

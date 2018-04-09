@@ -105,7 +105,7 @@ class Check(models.Model):
             return ValueError("timeout too big")
         elif self.timeout < DEFAULT_GRACE:
             return ValueError("timeout too small")
-
+    
     def assign_all_channels(self):
         if self.user:
             channels = Channel.objects.filter(user=self.user)

@@ -62,18 +62,20 @@ def login(request):
             if len(password):
                 user = authenticate(username=email, password=password)
                 if user is not None and user.is_active:
-                    auth_login(request, user)
-                    return redirect("hc-checks")
+                    auth_login(request, user)                    
+                    return redirect("hc-profile")
                 bad_credentials = True
             else:
                 try:
-                    user = User.objects.get(email=email)
+                    user = User.objects.filter(username__iexact=email)
+                    return redirect("hc-profile")                    
+                    # user = User.objects.get(email=email)
                 except User.DoesNotExist:
                     user = _make_user(email)
-                    _associate_demo_check(request, user)
-
-                user.profile.send_instant_login_link()
-                return redirect("hc-login-link-sent")
+                    _associate_demo_check(request, user)                
+                    user.profile.send_instant_login_link()                                    
+                    return redirect("hc-login-link-sent")
+                
 
     else:
         form = EmailPasswordForm()
