@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load compress staticfiles %}
+
+{% block content %}
+<div class="container">
+    {% if request.user.is_authenticated %}
+    <div class="row">
+        <h1 class="ai-title">Welcome to the Blog Channel</h1>    
+        {% if not posts %}
+            <p>Currently no posts</p>
+        {% else %}
+            <p>Here is a list of blog items the team has in store for you</p>
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <h2>Title</h2>                             
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <h2>Author</h2>                                 
+            </div>
+           
+            {% for post in posts %}
+            <span></span>
+            <div class="col-sm-12 col-md-12 col-lg-6">                
+                    <p><a href="{% url 'blog_body' post.id %}">{{post.title}}</a></p>                     
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6">                
+                    <p>{{post.author}}</p>                
+                </div> 
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'js/login.js' %}"></script>
+{% endcompress %}
+{% endblock %}

@@ -1,7 +1,29 @@
+# First ensure it builds on Travis, then work on the tests
+
+# language: python
+# python:
+#   - "2.7"
+#   - "3.4"
+# install:
+#     - pip install -r requirements.txt
+#     - pip install braintree coveralls mock mysqlclient
+# env:
+#   - DB=sqlite
+#   - DB=mysql
+#   - DB=postgres
+# addons:
+#   postgresql: "9.4"
+# script:
+#   - coverage run --omit=*/tests/* --source=hc manage.py test
+# after_success: coveralls
+# cache: pip
+
+
 language: python
+
 python:
-  - "2.7"
   - "3.4"
+  - "3.5"
 install:
     - pip install -r requirements.txt
     - pip install braintree coveralls mock mysqlclient
@@ -11,7 +33,7 @@ env:
   - DB=postgres
 addons:
   postgresql: "9.4"
+
 script:
-  - coverage run --omit=*/tests/* --source=hc manage.py test
-after_success: coveralls
-cache: pip
+  - coverage run manage.py test 
+  - COVERALLS_REPO_TOKEN="SoXOX0s49ofo0gndJ9so7o16HVkHpQ8PB" coveralls
