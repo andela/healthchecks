@@ -1,7 +1,6 @@
 # healthchecks
-[![Build Status](https://travis-ci.org/skapeyi/healthchecks.svg?branch=master)](https://travis-ci.org/skapeyi/healthchecks)
+[![Build Status](https://travis-ci.org/skapeyi/healthchecks.svg?branch=master)](https://travis-ci.org/skapeyi/healthchecks)  [![Coverage Status](https://coveralls.io/repos/github/skapeyi/healthchecks/badge.svg?branch=master)](https://coveralls.io/github/skapeyi/healthchecks?branch=master)
 
-[![Coverage Status](https://coveralls.io/repos/github/skapeyi/healthchecks/badge.svg?branch=master)](https://coveralls.io/github/skapeyi/healthchecks?branch=master)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
