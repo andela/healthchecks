@@ -36,6 +36,7 @@ INSTALLED_APPS = (
 
     'hc.accounts',
     'hc.api',
+    'hc.blog',
     'hc.front',
     'hc.payments'
 )
