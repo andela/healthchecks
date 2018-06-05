@@ -3,6 +3,7 @@ from django.core import mail
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
 from hc.api.models import Check
+from hc import settings
 
 
 class ProfileTestCase(BaseTestCase):
@@ -17,9 +18,12 @@ class ProfileTestCase(BaseTestCase):
         # profile.token should be set now
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
-        ### Assert that the token is set
 
+        ### Assert that the token is set
+        self.assertNotEqual(len(token), 0)
         ### Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Here's a link to set a password " .format(settings.SITE_ROOT), mail.outbox[0].body)
 
     def test_it_sends_report(self):
         check = Check(name="Test Check", user=self.alice)
@@ -28,6 +32,8 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.send_report()
 
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("This is a monthly report sent by healthchecks.io.", mail.outbox[0].body)
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
@@ -45,6 +51,8 @@ class ProfileTestCase(BaseTestCase):
         self.assertTrue("frank@example.org" in member_emails)
 
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("alice@example.org invites you to their".format(settings.SITE_ROOT), mail.outbox[0].body)
 
     def test_add_team_member_checks_team_access_allowed_flag(self):
         self.client.login(username="charlie@example.org", password="password")
@@ -108,3 +116,18 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     ### Test it creates and revokes API key
+    def test_it_creates_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+        action = {"create_api_key": "1"}
+        r = self.client.post("/accounts/profile/", action)
+        self.assertEqual(r.status_code, 200)
+        self.profile.refresh_from_db()
+        self.assertNotEqual(len(self.alice.profile.api_key),0)
+
+    def test_it_revokes_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+        action = {"revoke_api_key": "1"}
+        r = self.client.post("/accounts/profile/", action)
+        self.assertEqual(r.status_code, 200)
+        self.profile.refresh_from_db()
+        self.assertEqual(len(self.alice.profile.api_key),0)
