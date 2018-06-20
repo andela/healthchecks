@@ -49,7 +49,9 @@ def my_unresolved_checks(request):
     ctx = {
         "page": "checks",
         "checks": checks,
-        'unresolved_checks': unresolved_checks
+        'unresolved_checks': unresolved_checks,
+        "now": timezone.now(),
+        "ping_endpoint": settings.PING_ENDPOINT,
     }
 
     return render(request, "front/my_unresolved_checks.html", ctx)
