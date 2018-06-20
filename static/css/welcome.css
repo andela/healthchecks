@@ -87,3 +87,9 @@
     width: 22px;
     height: 22px;
 }
+.navbar-right {
+    background: #1a914f!important
+}
+.navbar-right li a {
+    color:#fff!important
+}

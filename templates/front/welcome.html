@@ -112,13 +112,12 @@
                             name="email"
                             autocomplete="email"
                             placeholder="Email">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-lg btn-primary pull-right">
+                                Get Started
+                            </button>
+                            </span>
                     </div>
-                </div>
-
-                <div class="clearfix">
-                    <button type="submit" class="btn btn-lg btn-primary pull-right">
-                        Get Started
-                    </button>
                 </div>
             </form>
 
@@ -287,15 +286,14 @@
     <div class="col-sm-12">
         <div class="jumbotron">
             <div class="row">
-                <div class="col-sm-7">
+                <div class="col-sm-6">
                     <p>healthchecks.io is a <strong>free</strong> and
                     <a href="https://github.com/healthchecks/healthchecks">open source</a> service.
                     Setting up monitoring for your cron jobs only takes minutes.
                     Start sleeping better at nights!</p>
 
                 </div>
-                <div class="col-sm-1"></div>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <form action="{% url 'hc-login' %}" method="post">
                         {% csrf_token %}
 
@@ -308,13 +306,12 @@
                                     name="email"
                                     autocomplete="email"
                                     placeholder="Email">
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-lg btn-primary pull-right">
+                                        Get Started
+                                    </button>
+                                    </span>
                             </div>
-                        </div>
-
-                        <div class="clearfix">
-                            <button type="submit" class="btn btn-lg btn-primary pull-right">
-                                Get Started
-                            </button>
                         </div>
                     </form>
                 </div>

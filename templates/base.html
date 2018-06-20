@@ -101,10 +101,10 @@
 
 
             {% if request.user.is_authenticated %}
-            {% else %}
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'hc-login' %}">Log In</a></li>
-            </ul>
+            {% elif request.get_full_path != '/accounts/login/' %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{% url 'hc-login' %}">Log In</a></li>
+                    </ul>
             {% endif %}
 
             {% if request.user.is_authenticated %}
