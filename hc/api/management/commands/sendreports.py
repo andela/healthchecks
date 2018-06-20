@@ -29,30 +29,46 @@ class Command(BaseCommand):
 
     def handle_one_run(self):
         now = timezone.now()
-        month_before = now - timedelta(days=30)
 
         report_due = Q(next_report_date__lt=now)
         report_not_scheduled = Q(next_report_date__isnull=True)
 
         q = Profile.objects.filter(report_due | report_not_scheduled)
         q = q.filter(reports_allowed=True)
-        q = q.filter(user__date_joined__lt=month_before)
-        sent = 0
-        for profile in q:
-            if num_pinged_checks(profile) > 0:
-                self.stdout.write(self.tmpl % profile.user.email)
-                profile.send_report()
-                sent += 1
+        profile = q.first()
 
-        return sent
+        if profile is None:
+            return False
+        
+        report_start_date = now - timedelta(days=profile.report_period)
+        report_end_date = now + timedelta(days=profile.report_period)
+        
+        if profile.user.date_joined > report_start_date:
+            return False
+        
+        # Try to update next_report_date
+        current_profile = Profile.objects.filter(id=profile.id, next_report_date=profile.next_report_date)
+
+        num_updated = current_profile.update(next_report_date=report_end_date)
+        if num_updated != 1:
+            # next_report_date was already updated elsewhere, skipping
+            return True
+
+        if profile.send_report():
+            self.stdout.write(self.tmpl % profile.user.email)
+            # Pause before next report to avoid hitting sending quota
+            self.pause()
+
+        return True
 
     def handle(self, *args, **options):
-        if not options["loop"]:
-            return "Sent %d reports" % self.handle_one_run()
-
         self.stdout.write("sendreports is now running")
         while True:
-            self.handle_one_run()
+            while self.handle_one_run():
+                pass
+
+            if not options["loop"]:
+                break
 
             formatted = timezone.now().isoformat()
             self.stdout.write("-- MARK %s --" % formatted)
