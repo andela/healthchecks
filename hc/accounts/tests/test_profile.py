@@ -1,4 +1,5 @@
 from django.core import mail
+from django.utils.timezone import now
 
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
@@ -107,4 +108,55 @@ class ProfileTestCase(BaseTestCase):
         # Expect only Alice's tags
         self.assertNotContains(r, "bobs-tag.svg")
 
-    ### Test it creates and revokes API key
+    def test_it_saves_reports_allowed_true(self):
+        self.profile.reports_allowed = False
+        self.profile.save()
+
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"update_reports_allowed":True,"reports_allowed": True, "report_period":"7"}
+        r = self.client.post("/accounts/profile/", form)
+        self.assertEqual(r.status_code, 200)
+
+        self.profile.refresh_from_db()
+        self.assertTrue(self.profile.reports_allowed)
+        self.assertIsNotNone(self.profile.next_report_date)
+
+    def test_it_saves_reports_allowed_false(self):
+        self.profile.reports_allowed = True
+        self.profile.next_report_date = now()
+        self.profile.save()
+
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"update_reports_allowed":True,"reports_allowed": False}
+        r = self.client.post("/accounts/profile/", form)
+        self.assertEqual(r.status_code, 200)
+
+        self.profile.refresh_from_db()
+        self.assertFalse(self.profile.reports_allowed)
+        self.assertIsNone(self.profile.next_report_date)
+
+    def test_it_saves_report_period(self):
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"update_reports_allowed":True,"reports_allowed": True,"report_period": "7"}
+        r = self.client.post("/accounts/profile/", form)
+        self.assertEqual(r.status_code, 200)
+
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.report_period, 7)
+        self.assertIsNotNone(self.profile.next_report_date)
+    
+    def test_it_does_not_save_non_standard_report_period(self):
+        self.profile.report_period = 7
+        self.profile.save()
+
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"update_reports_allowed":True,"reports_allowed": True,"report_period": "17"}
+        r = self.client.post("/accounts/profile/", form)
+        self.assertEqual(r.status_code, 200)
+
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.report_period, 7)

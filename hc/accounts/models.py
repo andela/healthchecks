@@ -12,10 +12,14 @@ from django.urls import reverse
 from django.utils import timezone
 from hc.lib import emails
 
+REPORT_PERIODS = ((1, "Daily"),
+                  (7, "Weekly"),
+                  (30, "Monthly"),)
 
 class Profile(models.Model):
     # Owner:
     user = models.OneToOneField(User, blank=True, null=True)
+    report_period = models.IntegerField(default=30,choices=REPORT_PERIODS)
     team_name = models.CharField(max_length=200, blank=True)
     team_access_allowed = models.BooleanField(default=False)
     next_report_date = models.DateTimeField(null=True, blank=True)
