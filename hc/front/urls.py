@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.urls import path
 
 from hc.front import views
 
@@ -33,6 +34,8 @@ urlpatterns = [
     url(r'^checks/$', views.my_checks, name="hc-checks"),
     url(r'^checks/add/$', views.add_check, name="hc-add-check"),
     url(r'^checks/([\w-]+)/', include(check_urls)),
+    # Add url for unresolved checks
+    path('checks/unresolved/', views.my_unresolved_checks, name='hc-unresolved-checks'),
     url(r'^integrations/', include(channel_urls)),
 
     url(r'^docs/$', views.docs, name="hc-docs"),

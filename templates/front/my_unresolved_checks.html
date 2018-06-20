@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load compress staticfiles hc_extras %}
+
+{% block title %}{{ num_down|num_down_title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% if tags %}
+    <div id="my-checks-tags" class="col-sm-12">
+        {% for tag, status in tags %}
+            <div class="btn btn-xs {{ status }}">{{ tag }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        {% if unresolved_checks %} 
+           <h2>Unresolved checks</h2>
+           <div class="col-sm-8">
+               {% include "front/unresolved_checks.html" %} 
+           </div>
+        {% else %}
+        <div class="alert alert-info">You don't have any unresolved checks yet.</div>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/selectize.min.js' %}"></script>
+<script src="{% static 'js/nouislider.min.js' %}"></script>
+<script src="{% static 'js/clipboard.min.js' %}"></script>
+<script src="{% static 'js/snippet-copy.js' %}"></script>
+<script src="{% static 'js/checks.js' %}"></script>
+{% endcompress %}
+{% endblock %}

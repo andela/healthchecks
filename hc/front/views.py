@@ -12,13 +12,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from django.utils.six.moves.urllib.parse import urlencode
+# from django.utils.six.moves.urllib.parse import urlencode
+from django.utils.http import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
 
 
+VALID_SORT_VALUES = ("name", "-name", "last_ping", "-last_ping", "created")
 # from itertools recipes:
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -28,14 +30,43 @@ def pairwise(iterable):
 
 
 @login_required
+def my_unresolved_checks(request):
+    if request.GET.get("sort") in VALID_SORT_VALUES:
+        request.profile.sort = request.GET["sort"]
+        request.profile.save()
+
+    checks = list(Check.objects.filter(user=request.team.user).prefetch_related("channel_set"))
+
+    # User requires a new dashboard tab for unresolved stuff
+    unresolved_checks = []
+    for c in checks:
+        c_status = c.get_status()
+        if c_status in ['grace', 'down']:
+            unresolved_checks.append(c)
+    if len(unresolved_checks) < 1:
+        unresolved_checks = None
+
+    ctx = {
+        "page": "checks",
+        "checks": checks,
+        'unresolved_checks': unresolved_checks
+    }
+
+    return render(request, "front/my_unresolved_checks.html", ctx)
+
+
+@login_required
 def my_checks(request):
     q = Check.objects.filter(user=request.team.user).order_by("created")
     checks = list(q)
 
     counter = Counter()
     down_tags, grace_tags = set(), set()
+    unresolved_checks = None
     for check in checks:
         status = check.get_status()
+        if status in ['down', ]:
+            unresolved_checks = 1
         for tag in check.tags_list():
             if tag == "":
                 continue
@@ -54,7 +85,8 @@ def my_checks(request):
         "tags": counter.most_common(),
         "down_tags": down_tags,
         "grace_tags": grace_tags,
-        "ping_endpoint": settings.PING_ENDPOINT
+        "ping_endpoint": settings.PING_ENDPOINT,
+        'unresolved_checks': unresolved_checks
     }
 
     return render(request, "front/my_checks.html", ctx)

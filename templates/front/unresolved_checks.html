@@ -1,0 +1,103 @@
+{% load hc_extras staticfiles %}
+<table id="unresolved-checks-table" class="table">
+    <tr>
+        <th></th>
+        <th class="th-name">
+            {% if sort == "name" %}
+            <a href="?sort=-name" data-toggle="tooltip" class="sort-name">
+                Name<span class="icon-asc"></span>
+            </a>
+            {% elif sort == "-name" %}
+            <a href="?sort=created" data-toggle="tooltip" class="sort-name">
+                Name<span class="icon-desc"></span>
+            </a>
+            {% else %}
+            <a href="?sort=name" data-toggle="tooltip" class="default sort-name">
+                Name
+            </a>
+            {% endif %}
+        </th>
+        <th class="hidden-xs hidden-sm">Ping URL</th>
+        <th class="th-last-ping">
+            {% if sort == "last_ping" %}
+            <a href="?sort=created" data-toggle="tooltip" class="sort-last-ping">
+                Last Ping<span class="icon-desc"></span>
+            </a>
+            {% elif sort == "-last_ping" %}
+            <a href="?sort=last_ping" data-toggle="tooltip" class="sort-last-ping">
+                Last Ping<span class="icon-asc"></span>
+            </a>
+            {% else %}
+            <a href="?sort=-last_ping" data-toggle="tooltip" class="default sort-last-ping">
+                Last Ping</span>
+            </a>
+            {% endif %}
+        </th>
+        <th class="hidden-xs"></th>
+    </tr>
+    {% for check in unresolved_checks %}
+    <tr
+        id="{{ check.code }}"
+        class="checks-row"
+        data-url="{{ check.url }}"
+        data-email="{{ check.email }}">
+
+        <td class="indicator-cell">
+            <span class="status icon-{{ check.get_status }}" data-toggle="tooltip"></span>
+        </td>
+        <td>
+            <div data-name="{{ check.name }}"
+                    data-tags="{{ check.tags }}"
+                    class="my-checks-name {% if not check.name %}unnamed{% endif %}">
+                <div>{{ check.name|default:"unnamed"|break_underscore }}</div>
+                {% for tag in check.tags_list %}
+                <span class="label label-tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        </td>
+        <td class="url-cell hidden-xs hidden-sm">
+            <span class="my-checks-url">
+                <span class="base">{{ ping_endpoint }}</span>{{ check.code }}
+            </span>
+            <button
+                class="copy-link hidden-sm"
+                data-clipboard-text="{{ check.url }}">
+                copy
+            </button>
+        </td>
+        <td>
+            <div id="lpd-{{ check.code}}" class="last-ping">
+                {% include "front/last_ping_cell.html" with check=check %}
+            </div>
+        </td>
+        <td class="hidden-xs">
+            <div class="check-menu dropdown">
+                <button class="btn btn-sm btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                <span class="icon-settings" aria-hidden="true"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="pause-li" {% if check.status == "new" or check.status == "paused" %}class="disabled"{% endif %}>
+                        <a href="#">Pause Monitoring</a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a class="show-log" href="#">Log</a>
+                    </li>
+                    <li>
+                        <a href="#" class="usage-examples">Usage Examples</a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="#" class="check-menu-remove"
+                            data-name="{{ check.name_then_code }}">
+                            Remove
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
