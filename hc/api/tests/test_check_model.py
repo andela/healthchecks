@@ -38,3 +38,8 @@ class CheckModelTestCase(TestCase):
         self.assertFalse(check.in_grace_period())
 
     ### Test that when a new check is created, it is not in the grace period
+    def test_status_of_new_check_not_grace(self):
+        check = Check()
+        self.assertNotEqual(check.get_status(), "grace")
+        self.assertEqual(check.get_status(), "new")
+
