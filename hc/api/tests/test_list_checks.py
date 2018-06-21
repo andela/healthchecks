@@ -64,13 +64,13 @@ class ListChecksTestCase(BaseTestCase):
 
         url = "http://localhost:8000/ping/"
 
-        self.assertEqual(name, "Alice 1")
+        self.assertEqual(name2, "Alice 1")
         self.assertEqual(timeout, 3600)
         self.assertEqual(grace, 900)
         self.assertEqual(ping_url, url+(str(self.a1.code)))
         self.assertEqual(status, "new")
 
-        self.assertEqual(name2, "Alice 2")
+        self.assertEqual(name, "Alice 2")
         self.assertEqual(timeout2, 86400)
         self.assertEqual(grace2, 3600)
         self.assertEqual(ping_url2, url + str(self.a2.code))
