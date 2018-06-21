@@ -65,16 +65,16 @@ class ListChecksTestCase(BaseTestCase):
         url = "http://localhost:8000/ping/"
 
         self.assertEqual(name2, "Alice 1")
-        self.assertEqual(timeout, 3600)
-        self.assertEqual(grace, 900)
-        self.assertEqual(ping_url, url+(str(self.a1.code)))
-        self.assertEqual(status, "new")
+        self.assertEqual(timeout2, 3600)
+        self.assertEqual(grace2, 900)
+        self.assertEqual(ping_url2, url+(str(self.a1.code)))
+        self.assertEqual(status2, "new")
 
         self.assertEqual(name, "Alice 2")
-        self.assertEqual(timeout2, 86400)
-        self.assertEqual(grace2, 3600)
-        self.assertEqual(ping_url2, url + str(self.a2.code))
-        self.assertEqual(status2, "up")
+        self.assertEqual(timeout, 86400)
+        self.assertEqual(grace, 3600)
+        self.assertEqual(ping_url, url + str(self.a2.code))
+        self.assertEqual(status, "up")
         # last_ping, n_pings and pause_url
 
     def test_it_shows_only_users_checks(self):
