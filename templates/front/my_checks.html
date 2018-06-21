@@ -32,6 +32,12 @@
 </div>
 <div class="row">
     <div class="col-sm-12">
+    
+    {% if unresolved_checks %}
+        <div style="float: right;">
+            <a class="text-danger" href="{% url 'hc-unresolved-checks' %}">View unresolved checks</a>
+        </div>
+    {% endif %}
 
 
     {% if checks %}

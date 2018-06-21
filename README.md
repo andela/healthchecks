@@ -1,4 +1,5 @@
 # healthchecks
+[![Build Status](https://travis-ci.org/profmcdan/healthchecks.svg?branch=master)](https://travis-ci.org/profmcdan/healthchecks)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
