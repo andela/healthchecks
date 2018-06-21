@@ -36,6 +36,5 @@ before_script:
 - psql -c 'create database hc;' -U postgres
 
 script:
-  - python manage.py migrate
   - coverage run manage.py test 
   - COVERALLS_REPO_TOKEN="SoXOX0s49ofo0gndJ9so7o16HVkHpQ8PB" coveralls
