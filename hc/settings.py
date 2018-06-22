@@ -94,7 +94,7 @@ TEST_RUNNER = 'hc.api.tests.CustomRunner'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
-        'NAME':     'hc',
+        'NAME':     'hc_postgres',
         'USER':     'postgres',
         'TEST': {'CHARSET': 'UTF8'}
     }
