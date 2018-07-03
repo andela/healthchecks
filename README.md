@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/malep2007/healthchecks.svg?branch=master)](https://travis-ci.org/malep2007/healthchecks)
 
+[![Coverage Status](https://coveralls.io/repos/github/malep2007/healthchecks/badge.svg?branch=master)](https://coveralls.io/github/malep2007/healthchecks?branch=master)
+
 [![Coverage Status](https://coveralls.io/repos/github/malep2007/healthchecks/badge.svg?branch=andella-test)](https://coveralls.io/github/malep2007/healthchecks?branch=andella-test)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
