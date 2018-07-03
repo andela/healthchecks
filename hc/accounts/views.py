@@ -140,62 +140,15 @@ def profile(request):
 
     show_api_key = False
     if request.method == "POST":
-        if "set_password" in request.POST:
-            profile.send_set_password_link()
-            return redirect("hc-set-password-link-sent")
-        elif "create_api_key" in request.POST:
-            profile.set_api_key()
-            show_api_key = True
-            messages.success(request, "The API key has been created!")
-        elif "revoke_api_key" in request.POST:
-            profile.api_key = ""
-            profile.save()
-            messages.info(request, "The API key has been revoked!")
-        elif "show_api_key" in request.POST:
-            show_api_key = True
-        elif "update_reports_allowed" in request.POST:
-            form = ReportSettingsForm(request.POST)
-            if form.is_valid():
-                profile.reports_allowed = form.cleaned_data["reports_allowed"]
-                profile.save()
-                messages.success(request, "Your settings have been updated!")
-        elif "invite_team_member" in request.POST:
-            if not profile.team_access_allowed:
-                return HttpResponseForbidden()
-
-            form = InviteTeamMemberForm(request.POST)
-            if form.is_valid():
-
-                email = form.cleaned_data["email"]
-                try:
-                    user = User.objects.get(email=email)
-                except User.DoesNotExist:
-                    user = _make_user(email)
-
-                profile.invite(user)
-                messages.success(request, "Invitation to %s sent!" % email)
-        elif "remove_team_member" in request.POST:
-            form = RemoveTeamMemberForm(request.POST)
-            if form.is_valid():
-
-                email = form.cleaned_data["email"]
-                farewell_user = User.objects.get(email=email)
-                farewell_user.profile.current_team = None
-                farewell_user.profile.save()
-
-                Member.objects.filter(team=profile,
-                                      user=farewell_user).delete()
-
-                messages.info(request, "%s removed from team!" % email)
-        elif "set_team_name" in request.POST:
-            if not profile.team_access_allowed:
-                return HttpResponseForbidden()
-
-            form = TeamNameForm(request.POST)
-            if form.is_valid():
-                profile.team_name = form.cleaned_data["team_name"]
-                profile.save()
-                messages.success(request, "Team Name updated!")
+        data = request.POST
+        self.set_password(data)
+        self.create_api_key(data)
+        self.revoke_api_key(data)
+        self.show_api_key(data)
+        self.update_reports_allowed(data)
+        self.invite_team_member(data)
+        self.remove_team_member(data)
+        self.set_team_name(data)
 
     tags = set()
     for check in Check.objects.filter(user=request.team.user):
@@ -217,6 +170,152 @@ def profile(request):
     }
 
     return render(request, "accounts/profile.html", ctx)
+    # if request.method == "POST":
+    #     if "set_password" in request.POST:
+    #         profile.send_set_password_link()
+    #         return redirect("hc-set-password-link-sent")
+    #     elif "create_api_key" in request.POST:
+    #         profile.set_api_key()
+    #         show_api_key = True
+    #         messages.success(request, "The API key has been created!")
+    #     elif "revoke_api_key" in request.POST:
+    #         profile.api_key = ""
+    #         profile.save()
+    #         messages.info(request, "The API key has been revoked!")
+    #     elif "show_api_key" in request.POST:
+    #         show_api_key = True
+    #     elif "update_reports_allowed" in request.POST:
+    #         form = ReportSettingsForm(request.POST)
+    #         if form.is_valid():
+    #             profile.reports_allowed = form.cleaned_data["reports_allowed"]
+    #             profile.save()
+    #             messages.success(request, "Your settings have been updated!")
+    #     elif "invite_team_member" in request.POST:
+    #         if not profile.team_access_allowed:
+    #             return HttpResponseForbidden()
+
+    #         form = InviteTeamMemberForm(request.POST)
+    #         if form.is_valid():
+
+    #             email = form.cleaned_data["email"]
+    #             try:
+    #                 user = User.objects.get(email=email)
+    #             except User.DoesNotExist:
+    #                 user = _make_user(email)
+
+    #             profile.invite(user)
+    #             messages.success(request, "Invitation to %s sent!" % email)
+    #     elif "remove_team_member" in request.POST:
+    #         form = RemoveTeamMemberForm(request.POST)
+    #         if form.is_valid():
+
+    #             email = form.cleaned_data["email"]
+    #             farewell_user = User.objects.get(email=email)
+    #             farewell_user.profile.current_team = None
+    #             farewell_user.profile.save()
+
+    #             Member.objects.filter(team=profile,
+    #                                   user=farewell_user).delete()
+
+    #             messages.info(request, "%s removed from team!" % email)
+    #     elif "set_team_name" in request.POST:
+    #         if not profile.team_access_allowed:
+    #             return HttpResponseForbidden()
+
+    #         form = TeamNameForm(request.POST)
+    #         if form.is_valid():
+    #             profile.team_name = form.cleaned_data["team_name"]
+    #             profile.save()
+    #             messages.success(request, "Team Name updated!")
+
+    # tags = set()
+    # for check in Check.objects.filter(user=request.team.user):
+    #     tags.update(check.tags_list())
+
+    # username = request.team.user.username
+    # badge_urls = []
+    # for tag in sorted(tags, key=lambda s: s.lower()):
+    #     if not re.match("^[\w-]+$", tag):
+    #         continue
+
+    #     badge_urls.append(get_badge_url(username, tag))
+
+    # ctx = {
+    #     "page": "profile",
+    #     "badge_urls": badge_urls,
+    #     "profile": profile,
+    #     "show_api_key": show_api_key
+    # }
+
+    # return render(request, "accounts/profile.html", ctx)
+
+def set_password_action(self, data):
+    if "set_password" in data:
+        profile.send_set_password_link()
+        return redirect("hc-set-password-link-sent")
+
+def create_api_key_action(self,data):
+    if "create_api_key" in data:
+        profile.set_api_key()
+        show_api_key =True
+        messages.success(request, "The API key has been created!")
+
+def revoke_api_key_action(self, data):
+    if "revoke_api_key" in data:
+        profile.api_key = ""
+        profile.save()
+        messages.info(request, "The API key has been revoked!")
+
+def show_api_key_action(self,data):
+    if "show_api_key" in data:
+        show_api_key = True
+
+def update_reports_allowed_action(self, data):
+    if "update_reports_allowed" in data:
+        form = ReportSettingsForm(request.POST)
+        if form.is_valid():
+            profile.reports_allowed = form.cleaned_data["reports_allowed"]
+            profile.save()
+            messages.success(request, "Your settings have been updated! ")
+
+def invite_team_member_action(self, data):
+    if "invite_team_member" in data:
+        if not profile.team_access_allowed:
+            return HttpResponseForbidden()
+        
+        form = InviteTeamMemberForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                user = _make_user(email)
+            
+            profile.invite(user)
+            messages.success(request, "Invitation to %s sent!" % email)
+
+def remove_team_member_action(self, data):
+    if "remove_team_member" in data:
+        form = RemoveTeamMemberForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            farewell_user = User.objects.get(email=email)
+            farewell_user.profile.current_team = None
+            farewell_user.profile.save()
+
+            Member.objects.filter(team=profile, user=farewell_user).delete()
+            messages.info(request, "%s removed from team! " % email)
+
+def set_team_name_action(self, data):
+    if "set_team_name" in data:
+        if not profile.team_access_allowed:
+            return HttpResponseForbidden()
+
+        form = TeamNameForm(request.POST)
+        if form.is_valid():
+            profile.team_name = form.cleaned_data["team_name"]
+            profie.save()
+            messages.success(request, "Team Name updated!")
 
 
 @login_required
