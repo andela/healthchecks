@@ -141,14 +141,14 @@ def profile(request):
     show_api_key = False
     if request.method == "POST":
         data = request.POST
-        self.set_password(data)
-        self.create_api_key(data)
-        self.revoke_api_key(data)
-        self.show_api_key(data)
-        self.update_reports_allowed(data)
-        self.invite_team_member(data)
-        self.remove_team_member(data)
-        self.set_team_name(data)
+        set_password(data)
+        create_api_key(data)
+        revoke_api_key(data)
+        show_api_key(data)
+        update_reports_allowed(data)
+        invite_team_member(data)
+        remove_team_member(data)
+        set_team_name(data)
 
     tags = set()
     for check in Check.objects.filter(user=request.team.user):
@@ -249,18 +249,18 @@ def profile(request):
 
     # return render(request, "accounts/profile.html", ctx)
 
-def set_password_action(self, data):
+def set_password_action( data):
     if "set_password" in data:
         profile.send_set_password_link()
         return redirect("hc-set-password-link-sent")
 
-def create_api_key_action(self,data):
+def create_api_key_action(data):
     if "create_api_key" in data:
         profile.set_api_key()
         show_api_key =True
         messages.success(request, "The API key has been created!")
 
-def revoke_api_key_action(self, data):
+def revoke_api_key_action(data):
     if "revoke_api_key" in data:
         profile.api_key = ""
         profile.save()
@@ -270,7 +270,7 @@ def show_api_key_action(self,data):
     if "show_api_key" in data:
         show_api_key = True
 
-def update_reports_allowed_action(self, data):
+def update_reports_allowed_action(data):
     if "update_reports_allowed" in data:
         form = ReportSettingsForm(request.POST)
         if form.is_valid():
@@ -278,7 +278,7 @@ def update_reports_allowed_action(self, data):
             profile.save()
             messages.success(request, "Your settings have been updated! ")
 
-def invite_team_member_action(self, data):
+def invite_team_member_action(data):
     if "invite_team_member" in data:
         if not profile.team_access_allowed:
             return HttpResponseForbidden()
@@ -294,7 +294,7 @@ def invite_team_member_action(self, data):
             profile.invite(user)
             messages.success(request, "Invitation to %s sent!" % email)
 
-def remove_team_member_action(self, data):
+def remove_team_member_action(data):
     if "remove_team_member" in data:
         form = RemoveTeamMemberForm(request.POST)
         if form.is_valid():
@@ -306,7 +306,7 @@ def remove_team_member_action(self, data):
             Member.objects.filter(team=profile, user=farewell_user).delete()
             messages.info(request, "%s removed from team! " % email)
 
-def set_team_name_action(self, data):
+def set_team_name_action(data):
     if "set_team_name" in data:
         if not profile.team_access_allowed:
             return HttpResponseForbidden()
