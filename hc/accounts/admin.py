@@ -54,20 +54,6 @@ class HcUserAdmin(UserAdmin):
 
         result = self.count_states(num_checks, num_channels)
 
-        # if num_checks == 0:
-        #     result += "0 checks, "
-        # elif num_checks == 1:
-        #     result += "1 check, "
-        # else:
-        #     result += "<strong>%d checks</strong>, " % num_checks
-
-        # if num_channels == 0:
-        #     result += "0 channels"
-        # elif num_channels == 1:
-        #     result += "1 channel, "
-        # else:
-        #     result += "<strong>%d channels</strong>, " % num_channels
-
         return result
 
     involvement.allow_tags = True
