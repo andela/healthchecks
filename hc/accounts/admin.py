@@ -39,24 +39,34 @@ class HcUserAdmin(UserAdmin):
 
     ordering = ["-id"]
 
+    def count_states(self, a, b):
+        if a <= 1 and b <= 1:
+            return "%d checks, %d channels" % (a, b)
+        else:
+            return "<strong>%d checks</strong><strong>%d channels</strong>" % (a, b)
+        
+        
+
     def involvement(self, user):
         result = ""
         num_checks = Check.objects.filter(user=user).count()
         num_channels = Channel.objects.filter(user=user).count()
 
-        if num_checks == 0:
-            result += "0 checks, "
-        elif num_checks == 1:
-            result += "1 check, "
-        else:
-            result += "<strong>%d checks</strong>, " % num_checks
+        result = self.count_states(num_checks, num_channels)
 
-        if num_channels == 0:
-            result += "0 channels"
-        elif num_channels == 1:
-            result += "1 channel, "
-        else:
-            result += "<strong>%d channels</strong>, " % num_channels
+        # if num_checks == 0:
+        #     result += "0 checks, "
+        # elif num_checks == 1:
+        #     result += "1 check, "
+        # else:
+        #     result += "<strong>%d checks</strong>, " % num_checks
+
+        # if num_channels == 0:
+        #     result += "0 channels"
+        # elif num_channels == 1:
+        #     result += "1 channel, "
+        # else:
+        #     result += "<strong>%d channels</strong>, " % num_channels
 
         return result
 
