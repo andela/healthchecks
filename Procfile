@@ -1,0 +1,1 @@
+web: gunicorn healthchecks.wsgi --log-file -
