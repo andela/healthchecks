@@ -6,9 +6,9 @@ name = "pypi"
 [packages]
 gunicorn = "*"
 django-heroku = "*"
-django = "1.10"
+django = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "2.7"
+python_version = "3.6"
