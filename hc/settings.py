@@ -156,3 +156,4 @@ else:
 
 # Coveralls Configuration
 COVERALLS_REPO_TOKEN="SoXOX0s49ofo0gndJ9so7o16HVkHpQ8PB"
+django_heroku.settings(locals())
