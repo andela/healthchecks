@@ -4,7 +4,7 @@ from hc.test import BaseTestCase
 
 class PauseTestCase(BaseTestCase):
 
-        def test_it_allows_only_post_request(self):
+    def test_it_allows_only_post_request(self):
         check = Check(user=self.bob, status="up")
         check.save()
 
