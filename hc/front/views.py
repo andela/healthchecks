@@ -125,7 +125,7 @@ def about(request):
 def add_check(request):
     assert request.method == "POST"
 
-    check = Check(user=request.team.user)
+    check = Check(user=request.team.user) 
     check.save()
 
     check.assign_all_channels()
