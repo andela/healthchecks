@@ -11,8 +11,7 @@ class PauseTestCase(BaseTestCase):
         url = "/api/v1/checks/%s/pause" % check.code
         r = self.client.post(url, "", content_type="application/json",
                              HTTP_X_API_KEY="abc")
-
-        ### Assert the expected status code and check's status
+        self.assertEqual(r.status_code, 200)
 
     def test_it_validates_ownership(self):
         check = Check(user=self.bob, status="up")

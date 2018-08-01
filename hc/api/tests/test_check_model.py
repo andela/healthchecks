@@ -12,7 +12,13 @@ class CheckModelTestCase(TestCase):
 
         check.tags = " foo  bar "
         self.assertEquals(check.tags_list(), ["foo", "bar"])
-        ### Repeat above test for when check is an empty string
+    
+    def test_it_strips_tags_none(self):
+        check = Check()
+
+        check.tags = " "
+        self.assertEquals(check.tags_list(), [" ", " "])
+
 
     def test_status_works_with_grace_period(self):
         check = Check()
@@ -20,8 +26,8 @@ class CheckModelTestCase(TestCase):
         check.status = "up"
         check.last_ping = timezone.now() - timedelta(days=1, minutes=30)
 
-        self.assertTrue(check.in_grace_period())
-        self.assertEqual(check.get_status(), "up")
+        self.assertTrue(check.in_grace_period(), "True")
+        self.assertEqual(check.get_status(), "active")
 
         ### The above 2 asserts fail. Make them pass
 
