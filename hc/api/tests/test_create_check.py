@@ -16,7 +16,7 @@ class CreateCheckTestCase(BaseTestCase):
 
         if expected_error:
             self.assertEqual(r.status_code, 400)
-            ### Assert that the expected error is the response error
+            self.assertEqual(r.status_code, 500)
 
         return r
 
