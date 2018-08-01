@@ -17,7 +17,7 @@ class CheckModelTestCase(TestCase):
         check = Check()
 
         check.tags = " "
-        self.assertEquals(check.tags_list(), [" ", " "])
+        self.assertEquals(check.tags_list(), [])
 
 
     def test_status_works_with_grace_period(self):
@@ -27,7 +27,7 @@ class CheckModelTestCase(TestCase):
         check.last_ping = timezone.now() - timedelta(days=1, minutes=30)
 
         self.assertTrue(check.in_grace_period(), "True")
-        self.assertEqual(check.get_status(), "active")
+        self.assertEqual(check.get_status(), "up")
 
         ### The above 2 asserts fail. Make them pass
 
