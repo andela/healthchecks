@@ -1,4 +1,8 @@
 # healthchecks
+[![Coverage Status](https://coveralls.io/repos/github/Masterabram/healthchecks/badge.svg?branch=master)](https://coveralls.io/github/Masterabram/healthchecks?branch=master) 
+
+https://coveralls.io/repos/github/Masterabram/healthchecks/badge.svg?branch=master(Coverage Status)!:https://coveralls.io/github/Masterabram/healthchecks?branch=master
+
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
