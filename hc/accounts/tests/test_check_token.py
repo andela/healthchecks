@@ -20,6 +20,10 @@ class CheckTokenTestCase(BaseTestCase):
         # After login, token should be blank
         self.profile.refresh_from_db()
         self.assertEqual(self.profile.token, "")
+    
+    def test_loggedin_redirects(self):
+        r = self.client.post("/accounts/check_token/alice/secret-token/")
+        self.assertRedirects(r, "/checks/")
 
     ### Login and test it redirects already logged in
 
