@@ -34,5 +34,3 @@ class BaseTestCase(TestCase):
         self.charlie = User(username="charlie", email="charlie@example.org")
         self.charlie.set_password("password")
         self.charlie.save()
-
-        ### Set Charles not to have access to Alice's stuff
