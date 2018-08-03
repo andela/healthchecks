@@ -1,4 +1,5 @@
 # healthchecks
+[![Build Status](https://travis-ci.org/Masterabram/healthchecks.svg?branch=develop)](https://travis-ci.org/Masterabram/healthchecks)  [![Coverage Status](https://coveralls.io/repos/github/Masterabram/healthchecks/badge.svg?branch=develop)](https://coveralls.io/github/Masterabram/healthchecks?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/891b0150c3b7634c331b/maintainability)](https://codeclimate.com/github/Masterabram/healthchecks/maintainability)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
