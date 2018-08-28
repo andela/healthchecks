@@ -12,7 +12,12 @@ from django.urls import reverse
 from django.utils import timezone
 from hc.lib import emails
 
-
+NO_REPORT = timedelta()
+REPORT_PERIODS = ((NO_REPORT, "Disabled"),
+               (timedelta(days=1), "Day"),
+               (timedelta(days=7), "Week"),
+               (timedelta(days=30), "Month"))
+               
 class Profile(models.Model):
     # Owner:
     user = models.OneToOneField(User, blank=True, null=True)
@@ -20,6 +25,7 @@ class Profile(models.Model):
     team_access_allowed = models.BooleanField(default=False)
     next_report_date = models.DateTimeField(null=True, blank=True)
     reports_allowed = models.BooleanField(default=True)
+    report_period = models.DurationField(default=NO_REPORT, choices=REPORT_PERIODS)
     ping_log_limit = models.IntegerField(default=100)
     token = models.CharField(max_length=128, blank=True)
     api_key = models.CharField(max_length=128, blank=True)

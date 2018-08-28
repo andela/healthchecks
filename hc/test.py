@@ -36,3 +36,4 @@ class BaseTestCase(TestCase):
         self.charlie.save()
 
         ### Set Charles not to have access to Alice's stuff
+        Profile.objects.create(user=self.charlie)

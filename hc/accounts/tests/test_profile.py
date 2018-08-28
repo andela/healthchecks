@@ -1,3 +1,4 @@
+from datetime import timedelta as td
 from django.core import mail
 
 from hc.test import BaseTestCase
@@ -18,8 +19,11 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
         ### Assert that the token is set
-
+        self.assertNotEqual(token, None)
         ### Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Set password on healthchecks.io')
+        self.assertIn('Here\'s a link to set a password for your account on healthchecks.io', mail.outbox[0].body)
 
     def test_it_sends_report(self):
         check = Check(name="Test Check", user=self.alice)
@@ -28,6 +32,9 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.send_report()
 
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Monthly Report')
+        self.assertIn('This is a monthly report sent by healthchecks.io.', mail.outbox[0].body)
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
@@ -43,8 +50,11 @@ class ProfileTestCase(BaseTestCase):
         ### Assert the existence of the member emails
 
         self.assertTrue("frank@example.org" in member_emails)
-
+        
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('You have been invited to join', mail.outbox[0].subject)
+        self.assertIn('invites you to their healthchecks.io account', mail.outbox[0].body)
 
     def test_add_team_member_checks_team_access_allowed_flag(self):
         self.client.login(username="charlie@example.org", password="password")
@@ -108,3 +118,61 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     ### Test it creates and revokes API key
+    def test_creates_revokes_api_keys(self):
+        self.client.login(username="alice@example.org", password='password')
+
+        form = {'create_api_key':'1'}
+        request = self.client.post('/accounts/profile/',form)
+        self.assertContains(request, 'The API key has been created!')
+    
+    def test_revokes_api_keys(self):
+        self.client.login(username='alice@example.org', password='password')
+
+        form={'revoke_api_key':'1'}
+        request = self.client.post('/accounts/profile/',form)
+        self.assertContains(request, 'The API key has been revoked!')
+
+    #Test that it changes the report allowed to true
+    def test_changes_report_allowed_true(self):
+        self.profile.reports_allowed = False
+        self.profile.save()
+
+        self.client.login(username='alice@example.org', password='password')
+
+        form={'update_reports_allowed':'1','reports_allowed':True,'report_period':'Weekly'}
+        request = self.client.post('/accounts/profile/',form)
+
+        self.profile.refresh_from_db()
+        self.assertTrue(self.profile.reports_allowed)
+        self.assertContains(request, 'Your settings have been updated!')
+        self.assertIsNotNone(self.profile.next_report_date)
+
+    # Test that changes report allowed to false
+    def test_changes_report_allowed_false(self):
+        self.profile.reports_allowed = True
+        self.profile.save()
+
+        self.client.login(username='alice@example.org', password='password')
+
+        form={'update_reports_allowed':'1','reports_allowed':False,'report_period':''}
+        request = self.client.post('/accounts/profile/',form)
+
+        self.profile.refresh_from_db()
+        self.assertFalse(self.profile.reports_allowed)
+        self.assertContains(request, 'Your settings have been updated!')
+        self.assertIsNone(self.profile.next_report_date)
+
+    # Test that changes the report period
+    def test_changes_report_period(self):
+        self.profile.reports_allowed = True
+        self.profile.report_period = td()
+        self.profile.save()
+
+        self.client.login(username='alice@example.org', password='password')
+
+        form={'update_reports_allowed':'1','reports_allowed':True,'report_period':'Monthly'}
+        request = self.client.post('/accounts/profile/',form)
+        
+        self.profile.refresh_from_db()
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(self.profile.report_period,td(days=30))

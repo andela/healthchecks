@@ -1,3 +1,4 @@
+from datetime import timedelta as td
 from django import forms
 
 
@@ -15,6 +16,21 @@ class EmailPasswordForm(forms.Form):
 
 class ReportSettingsForm(forms.Form):
     reports_allowed = forms.BooleanField(required=False)
+    report_period = forms.CharField(required=False)
+
+    def clean_report_period(self):
+        report_frequency = self.cleaned_data["report_period"]
+        submitted_frequency = td()
+
+        if report_frequency in ("Daily","Weekly","Monthly"):
+            switcher = {
+                'Daily':td(days=1),
+                'Weekly':td(days=7),
+                'Monthly':td(days=30)
+            }
+            submitted_frequency = switcher[report_frequency]
+        
+        return submitted_frequency
 
 
 class SetPasswordForm(forms.Form):

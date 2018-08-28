@@ -24,14 +24,50 @@
             <div class="panel-body settings-block">
                 <form method="post">
                     {% csrf_token %}
-                    <h2>Monthly Reports</h2>
-                    <label>
+                    <h2>Summary Reports</h2>
+                    <p>Would you like reports on status checks in all teams you belong to emailed to you?</p>
+                    <label class="checkbox-container">
                         <input
+                            id="reports_allowed"
                             name="reports_allowed"
                             type="checkbox"
                             {% if profile.reports_allowed %} checked {% endif %}>
-                        Each month send me a summary of my checks
+                        <span class="checkmark"></span>
+                        Yes
                     </label>
+                    <p>How often?</p>
+                    <label class="radio-container">
+                        <input
+                            type="radio"
+                            class="report_period"
+                            name="report_period"
+                            value="Daily"
+                            {% if profile.report_period.total_seconds == 86400 %} checked {% endif %}>
+                        <span class="radiomark"></span>
+                        Daily
+                    </label>
+                    <label class="radio-container">
+                        <input
+                            type="radio"
+                            class="report_period"
+                            name="report_period"
+                            value="Weekly"
+                            {% if profile.report_period.total_seconds == 604800 %} checked {% endif %}>
+                        <span class="radiomark"></span>
+                        Weekly
+                    </label>
+                    <label class="radio-container">
+                        <input
+                            type="radio"
+                            id="monthly_report_period"
+                            class="report_period"
+                            name="report_period"
+                            value="Monthly"
+                            {% if profile.report_period.total_seconds > 604800 %} checked {% endif %}>
+                        <span class="radiomark"></span>
+                        Monthly
+                    </label>
+                    
                     <button
                         name="update_reports_allowed"
                         type="submit"
@@ -323,5 +359,6 @@
 <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'js/notifications.js' %}"></script>
 {% endcompress %}
 {% endblock %}
