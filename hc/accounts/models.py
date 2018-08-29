@@ -54,9 +54,15 @@ class Profile(models.Model):
         self.save()
 
     def send_report(self):
-        # reset next report date first:
+        # reset next report date first based on frequency selected:
+        # This needs to be optimized preferably using dict with reports_allowed as key
         now = timezone.now()
-        self.next_report_date = now + timedelta(days=30)
+        if self.reports_allowed is 'monthly':
+            self.next_report_date = now + timedelta(days=30)
+        elif self.reports_allowed is 'weekly':
+            self.next_report_date = now + timedelta(days=7)
+        elif self.reports_allowed is 'daily':
+            self.next_report_date = now + timedelta(days=1)
         self.save()
 
         token = signing.Signer().sign(uuid.uuid4())
