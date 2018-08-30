@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
                 ('next_report_date', models.DateTimeField(null=True, blank=True)),
-                ('reports_allowed', models.BooleanField(default=True)),
+                ('reports_allowed', models.CharField(blank=True, max_length=20)),
                 ('user', models.OneToOneField(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
         ),
