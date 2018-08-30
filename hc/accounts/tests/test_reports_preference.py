@@ -27,7 +27,8 @@ class ReportsPreferenceTestCase(BaseTestCase):
 		self.assertEquals(self.alice.profile.reports_allowed, "daily")
 
 	def test_next_report_date_correct(self):
-		#checks if the next report date is set correctly. For weekly, the next date should be 7 days from now
+		#Checks if the next report date is set correctly. For weekly,
+		#the next date should be 7 days from now
 		check = Check(name="Test Check", user=self.alice)
 		check.save()
 

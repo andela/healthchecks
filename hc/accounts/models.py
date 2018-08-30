@@ -56,10 +56,11 @@ class Profile(models.Model):
     def send_report(self):
         # reset next report date first based on frequency selected:
         # Need to move reports_freq to a single source
-        reports_freq_options = {'monthly' : 30, 'weekly' : 7, 'daily' : 1, 'never' : 0}
+        reports_freq = {'monthly': 30, 'weekly': 7, 'daily': 1, 'never': 0}
         now = timezone.now()
-        if self.reports_allowed in reports_freq_options:
-            self.next_report_date = now + timedelta(days=reports_freq_options[self.reports_allowed])
+        if self.reports_allowed in reports_freq:
+            self.next_report_date = now + 
+            timedelta(days=reports_freq[self.reports_allowed])
             self.save()
 
             token = signing.Signer().sign(uuid.uuid4())
