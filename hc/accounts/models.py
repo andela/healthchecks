@@ -55,27 +55,24 @@ class Profile(models.Model):
 
     def send_report(self):
         # reset next report date first based on frequency selected:
-        # This needs to be optimized preferably using dict with reports_allowed as key
+        # Need to move reports_freq to a single source
+        reports_freq_options = {'monthly' : 30, 'weekly' : 7, 'daily' : 1, 'never' : 0}
         now = timezone.now()
-        if self.reports_allowed is 'monthly':
-            self.next_report_date = now + timedelta(days=30)
-        elif self.reports_allowed is 'weekly':
-            self.next_report_date = now + timedelta(days=7)
-        elif self.reports_allowed is 'daily':
-            self.next_report_date = now + timedelta(days=1)
-        self.save()
+        if self.reports_allowed in reports_freq_options:
+            self.next_report_date = now + timedelta(days=reports_freq_options[self.reports_allowed])
+            self.save()
 
-        token = signing.Signer().sign(uuid.uuid4())
-        path = reverse("hc-unsubscribe-reports", args=[self.user.username])
-        unsub_link = "%s%s?token=%s" % (settings.SITE_ROOT, path, token)
+            token = signing.Signer().sign(uuid.uuid4())
+            path = reverse("hc-unsubscribe-reports", args=[self.user.username])
+            unsub_link = "%s%s?token=%s" % (settings.SITE_ROOT, path, token)
 
-        ctx = {
-            "checks": self.user.check_set.order_by("created"),
-            "now": now,
-            "unsub_link": unsub_link
-        }
+            ctx = {
+                "checks": self.user.check_set.order_by("created"),
+                "now": now,
+                "unsub_link": unsub_link
+            }
 
-        emails.report(self.user.email, ctx)
+            emails.report(self.user.email, ctx)
 
     def invite(self, user):
         member = Member(team=self, user=user)

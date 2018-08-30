@@ -14,6 +14,7 @@ class EmailPasswordForm(forms.Form):
 
 
 class ReportSettingsForm(forms.Form):
+    #Consider changing this to choiceField with options none,daily,weekly and monthly
     reports_allowed = forms.CharField()
 
 

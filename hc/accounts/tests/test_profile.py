@@ -28,6 +28,9 @@ class ProfileTestCase(BaseTestCase):
         check = Check(name="Test Check", user=self.alice)
         check.save()
 
+        self.alice.profile.reports_allowed = 'monthly'
+        self.alice.profile.save()
+        
         self.alice.profile.send_report()
 
         ###Assert that the email was sent and check email content
