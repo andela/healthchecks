@@ -1,4 +1,5 @@
 from django.core import mail
+from django.conf import settings
 
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
@@ -18,8 +19,11 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
         ### Assert that the token is set
-
+        self.assertTrue(len(token) > 10)
         ### Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        expected_subject = "Set password on %s" % settings.SITE_NAME
+        self.assertEqual(mail.outbox[0].subject, expected_subject)
 
     def test_it_sends_report(self):
         check = Check(name="Test Check", user=self.alice)
