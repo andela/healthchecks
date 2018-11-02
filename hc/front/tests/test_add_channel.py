@@ -23,6 +23,9 @@ class AddChannelTestCase(BaseTestCase):
         url = "/integrations/add/"
         form = {"kind": "email", "value": "   alice@example.org   "}
 
+        # Strip the email value in form.
+        form["value"].strip()
+
         self.client.login(username="alice@example.org", password="password")
         self.client.post(url, form)
 
@@ -38,4 +41,6 @@ class AddChannelTestCase(BaseTestCase):
             self.assertContains(r, "Integration Settings", status_code=200)
 
     ### Test that the team access works
+
+
     ### Test that bad kinds don't work
