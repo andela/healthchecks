@@ -19,7 +19,10 @@ class ProfileTestCase(BaseTestCase):
         token = self.alice.profile.token
         ### Assert that the token is set
 
-        ### Assert that the email was sent and check email content
+        ### Assert that the email was sent and check email content - done
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Set password on Healthchecks.io')
+        self.assertTrue('To set up a password for your account on Healthchecks.io, please press the button' in mail.outbox[0].body)
 
     def test_it_sends_report(self):
         check = Check(name="Test Check", user=self.alice)
@@ -28,6 +31,7 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.send_report()
 
         ###Assert that the email was sent and check email content
+
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
@@ -41,7 +45,6 @@ class ProfileTestCase(BaseTestCase):
             member_emails.add(member.user.email)
 
         ### Assert the existence of the member emails
-
         self.assertTrue("frank@example.org" in member_emails)
 
         ###Assert that the email was sent and check email content
