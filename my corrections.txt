@@ -1,0 +1,8 @@
+get compressor module installed
+https://github.com/django-compressor/django-compressor/issues/807 explains how without c extensions
+
+Like this:
+
+pip install rcssmin --install-option="--without-c-extensions"
+pip install rjsmin --install-option="--without-c-extensions"
+pip install django-compressor --upgrade

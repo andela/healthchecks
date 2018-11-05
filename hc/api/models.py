@@ -44,7 +44,7 @@ class Check(models.Model):
     name = models.CharField(max_length=100, blank=True)
     tags = models.CharField(max_length=500, blank=True)
     code = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     timeout = models.DurationField(default=DEFAULT_TIMEOUT)
     grace = models.DurationField(default=DEFAULT_GRACE)
@@ -98,6 +98,13 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
+    
+    # implemented a method to catch bad timeout values
+    def valid_timeout(self):
+        if self.timeout > DEFAULT_TIMEOUT:
+            return ValueError("timeout too big")
+        elif self.timeout < DEFAULT_GRACE:
+            return ValueError("timeout too small")
 
     def assign_all_channels(self):
         if self.user:
@@ -133,7 +140,7 @@ class Check(models.Model):
 
 class Ping(models.Model):
     n = models.IntegerField(null=True)
-    owner = models.ForeignKey(Check)
+    owner = models.ForeignKey(Check, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     scheme = models.CharField(max_length=10, default="http")
     remote_addr = models.GenericIPAddressField(blank=True, null=True)
@@ -143,7 +150,7 @@ class Ping(models.Model):
 
 class Channel(models.Model):
     code = models.UUIDField(default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     kind = models.CharField(max_length=20, choices=CHANNEL_KINDS)
     value = models.TextField(blank=True)
@@ -258,8 +265,8 @@ class Notification(models.Model):
     class Meta:
         get_latest_by = "created"
 
-    owner = models.ForeignKey(Check)
+    owner = models.ForeignKey(Check, on_delete=models.CASCADE)
     check_status = models.CharField(max_length=6)
-    channel = models.ForeignKey(Channel)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     error = models.CharField(max_length=200, blank=True)

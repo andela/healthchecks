@@ -22,6 +22,9 @@ class CheckTokenTestCase(BaseTestCase):
         self.assertEqual(self.profile.token, "")
 
     ### Login and test it redirects already logged in
+   
+        
+  
 
     ### Login with a bad token and check that it redirects
 
