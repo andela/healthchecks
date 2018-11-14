@@ -1,3 +1,4 @@
+mock
 croniter
 Django==2.1.2
 django_compressor==2.2
