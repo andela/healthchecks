@@ -12,3 +12,12 @@ class AddCheckTestCase(BaseTestCase):
         assert Check.objects.count() == 1
 
     ### Test that team access works
+
+    def test_term_access(self):
+        url = "/terms/"
+        r = self.client.get(url)
+        # first make sure its there
+        assert r.status_code == 200
+        # then check content
+        self.assertContains(r, "Terms of Service", status_code=200)
+
