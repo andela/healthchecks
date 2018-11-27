@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for entry in blog_entries %}
+    <div>
+      <h2>{{ entry.title }}</h2>
+      <p>{{ entry.created }}</p>
+      <p>{{ entry.body }}</p>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
