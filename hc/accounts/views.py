@@ -1,6 +1,6 @@
 import uuid
 import re
-
+from datetime import timedelta as td
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.core import signing
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import redirect, render
+from django.utils.timezone import now
 from hc.accounts.forms import (EmailPasswordForm, InviteTeamMemberForm,
                                RemoveTeamMemberForm, ReportSettingsForm,
                                SetPasswordForm, TeamNameForm)
@@ -157,6 +158,21 @@ def profile(request):
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
+                
+                # check for report_allowed
+                if not profile.reports_allowed:
+                    profile.next_report_date = None
+                    profile.report_period = td()
+                else:
+                    
+                    # Set selected report_period
+                    profile.report_period = form.cleaned_data["report_period"]
+                    # Schedule next report date
+                    if profile.report_period: 
+                        profile.next_report_date = now() + form.cleaned_data["report_period"]
+                    else:
+                        profile.next_report_date = None 
+                
                 profile.save()
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
